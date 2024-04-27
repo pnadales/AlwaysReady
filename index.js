@@ -1,10 +1,10 @@
 const { Pool } = require("pg");
 require('dotenv').config();
-const { text } = require("stream/consumers");
-const { measureMemory } = require("vm");
 
+// Variable de entorno con el password de la base de datos
 const dbpw = process.env.DB_PW;
-// Configuración de la base de datos usando string de conexion
+
+// Configuración de la base de datos
 const pool = new Pool({
     user: "postgres",
     host: "localhost",
@@ -13,16 +13,15 @@ const pool = new Pool({
     port: 5432
 });
 
-// manejo del process.argv
+//Captura de elementos ingresdos por consola
 const argumentos = process.argv.slice(2);
-// posicion 0 funcion a usar
-const funcion = argumentos[0];
-// console.log(argumentos)
 
+//Captura del elemento que contiene la accion a realizar
+const funcion = argumentos[0];
+
+//Funcion para mostrar mensaje en errores de host y port
 function otrosErrores(e) {
     let message;
-    console.log(e);
-    console.log("" == e.message)
     if (e.code = 'ECONNREFUSED' && "" == e.message) {
         message = 'Error en el puerto ingresado'
     } else if (e.code == 'ENOTFOUND') {
@@ -34,7 +33,7 @@ function otrosErrores(e) {
 }
 
 
-//Crear funcion para registrar estudiantes
+//Funcion para registrar estudiantes
 const nuevoEstudiante = async (nombre, rut, curso, nivel) => {
     try {
         const query = {
@@ -45,12 +44,13 @@ const nuevoEstudiante = async (nombre, rut, curso, nivel) => {
         console.log(`Estudiante ${nombre} agregado con éxito`);
         console.log("Estudiante agregado: ", res.rows[0]);
     } catch (error) {
+        console.log("No se pudo agregar el estudiante, revise los datos ingresados.")
         console.log("Hubo un error:", otrosErrores(error));
     };
     await pool.end();
 };
 
-// Crear una función asíncrona para obtener por consola el registro de un estudiante por medio de su rut
+//Función para obtener el registro de un estudiante por medio de su rut
 const consultaRut = async (rut) => {
     try {
 
@@ -72,7 +72,7 @@ const consultaRut = async (rut) => {
     }
 };
 
-//Crear funcion para consultar estudiantes registrados
+//Funcion para consultar todos estudiantes registrados
 const consultaEstudiante = async () => {
     try {
 
@@ -88,7 +88,7 @@ const consultaEstudiante = async () => {
     }
 };
 
-// Crear una función asíncrona para actualizar los datos de un estudiante en la base de datos. 
+//Funciónpara actualizar los datos de un estudiante en la base de datos. 
 const actualizarEstud = async (nombre, rut, curso, nivel) => {
     try {
         const query = {
@@ -110,7 +110,7 @@ const actualizarEstud = async (nombre, rut, curso, nivel) => {
 };
 
 
-// Crear una función asíncrona para eliminar el registro de un estudiante de la base de datos. 
+//Función para eliminar el registro de un estudiante de la base de datos. 
 const eliminarEstud = async (rut) => {
     try {
         const query = {
@@ -130,9 +130,8 @@ const eliminarEstud = async (rut) => {
     }
 };
 
-// eliminarEstud("4444444-4");
 
-//Programar manejo de datos por consola
+//Ejecutar la funcion correspondiente 
 switch (funcion) {
     case "nuevo":
         nuevoEstudiante(argumentos[1], argumentos[2], argumentos[3], argumentos[4]);
