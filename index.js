@@ -21,7 +21,9 @@ const funcion = argumentos[0];
 
 function otrosErrores(e) {
     let message;
-    if (e.code = 'ECONNREFUSED') {
+    console.log(e);
+    console.log("" == e.message)
+    if (e.code = 'ECONNREFUSED' && "" == e.message) {
         message = 'Error en el puerto ingresado'
     } else if (e.code == 'ENOTFOUND') {
         message = 'Error de host'
@@ -94,8 +96,13 @@ const actualizarEstud = async (nombre, rut, curso, nivel) => {
             values: [rut, curso, nivel, nombre]
         }
         const res = await pool.query(query);
-        console.log(`Estudiante ${nombre} modificado con éxito`);
-        console.log("Estudiante modificado: ", res.rows[0]);
+        if (res.rowCount == 0) {
+            console.log("No se encontró el estudiante ingresado");
+        } else {
+            console.log(`Estudiante ${nombre} modificado con éxito`);
+            console.log("Estudiante modificado: ", res.rows[0]);
+
+        }
         await pool.end();
     } catch (error) {
         console.log("Hubo un error:", otrosErrores(error));
@@ -111,8 +118,12 @@ const eliminarEstud = async (rut) => {
             values: [rut]
         }
         const res = await pool.query(query);
-        console.log(`Estudiante eliminado con éxito`);
-        console.log("Estudiante eliminado: ", res.rows[0]);
+        if (res.rowCount == 0) {
+            console.log("No se encontró el estudiante ingresado");
+        } else {
+            console.log(`Estudiante eliminado con éxito`);
+            console.log("Estudiante eliminado: ", res.rows[0]);
+        }
         await pool.end();
     } catch (error) {
         console.log("Hubo un error:", otrosErrores(error));
