@@ -1,13 +1,15 @@
 const { Pool } = require("pg");
+require('dotenv').config();
 const { text } = require("stream/consumers");
 const { measureMemory } = require("vm");
 
+const dbpw = process.env.DB_PW;
 // Configuración de la base de datos usando string de conexion
 const pool = new Pool({
     user: "postgres",
     host: "localhost",
     database: "always_music",
-    password: "paulo",
+    password: dbpw,
     port: 5432
 });
 
@@ -41,7 +43,7 @@ const nuevoEstudiante = async (nombre, rut, curso, nivel) => {
         console.log(`Estudiante ${nombre} agregado con éxito`);
         console.log("Estudiante agregado: ", res.rows[0]);
     } catch (error) {
-        console.log("Hubo un error:", error.message);
+        console.log("Hubo un error:", otrosErrores(error));
     };
     await pool.end();
 };
@@ -64,7 +66,7 @@ const consultaRut = async (rut) => {
         }
         await pool.end();
     } catch (error) {
-        console.log("Hubo un error:", error.message);
+        console.log("Hubo un error:", otrosErrores(error));
     }
 };
 
@@ -80,7 +82,7 @@ const consultaEstudiante = async () => {
         console.log(estudiantes.rows);
         await pool.end();
     } catch (error) {
-        console.log("Hubo un error:", error.message);
+        console.log("Hubo un error:", otrosErrores(error));
     }
 };
 
@@ -96,7 +98,7 @@ const actualizarEstud = async (nombre, rut, curso, nivel) => {
         console.log("Estudiante modificado: ", res.rows[0]);
         await pool.end();
     } catch (error) {
-        console.log("Hubo un error:", error.message);
+        console.log("Hubo un error:", otrosErrores(error));
     }
 };
 
@@ -113,7 +115,7 @@ const eliminarEstud = async (rut) => {
         console.log("Estudiante eliminado: ", res.rows[0]);
         await pool.end();
     } catch (error) {
-        console.log("Hubo un error:", error.message);
+        console.log("Hubo un error:", otrosErrores(error));
     }
 };
 
